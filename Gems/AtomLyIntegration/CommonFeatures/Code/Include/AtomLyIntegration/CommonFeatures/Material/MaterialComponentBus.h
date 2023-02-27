@@ -171,6 +171,24 @@ namespace AZ
         class MaterialComponentNotifications : public ComponentBus
         {
         public:
+
+            static const EBusHandlerPolicy HandlerPolicy = EBusHandlerPolicy::MultipleAndOrdered;
+
+            struct BusHandlerOrderCompare
+            {
+                AZ_FORCE_INLINE bool operator()(MaterialComponentNotifications* left, MaterialComponentNotifications* right) const
+                {
+                    return left->GetOrder() < right->GetOrder();
+                }
+            };
+
+            virtual int GetOrder()
+            {
+                return m_materialComponentNotificationsOrder;
+            }
+
+            int m_materialComponentNotificationsOrder = 10;
+
             //! This notification is sent whenever material changes are made that need to be reflected in the UI.
             virtual void OnMaterialsEdited(){};
 
