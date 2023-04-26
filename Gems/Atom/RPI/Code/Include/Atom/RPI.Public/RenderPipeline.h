@@ -108,7 +108,11 @@ namespace AZ
             using PipelineViewMap = AZStd::unordered_map<PipelineViewTag, PipelineViews>;
             using ViewToViewTagMap = AZStd::map<const View*, PipelineViewTag>;
 
-            //! Assign a view for a PipelineViewTag used in this pipeline. 
+            void UnregisterView(ViewPtr view);
+            void RemoveTransientView(const PipelineViewTag& viewTag, ViewPtr view);
+            void ResetPersistentView(const PipelineViewTag& viewTag, ViewPtr view);
+
+            //! Assign a view for a PipelineViewTag used in this pipeline.
             //! This reference of this view will be saved until it's replaced in another SetPersistentView call.
             void SetPersistentView(const PipelineViewTag& viewId, ViewPtr view);
 
