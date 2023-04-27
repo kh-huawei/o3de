@@ -295,7 +295,7 @@ namespace AZ
             }
         }
 
-        void RenderPipeline::RemoveTransientView(const PipelineViewTag& viewTag, ViewPtr view)
+        void RenderPipeline::RemoveTransientView(const PipelineViewTag viewTag, ViewPtr view)
         {
             auto viewItr = m_pipelineViewsByTag.find(viewTag);
             if (viewItr != m_pipelineViewsByTag.end())
@@ -324,7 +324,7 @@ namespace AZ
             }
         }
 
-        void RenderPipeline::ResetPersistentView(const PipelineViewTag& viewTag, ViewPtr view)
+        void RenderPipeline::ResetPersistentView(const PipelineViewTag viewTag, ViewPtr view)
         {
             auto viewItr = m_pipelineViewsByTag.find(viewTag);
             if (viewItr != m_pipelineViewsByTag.end())
