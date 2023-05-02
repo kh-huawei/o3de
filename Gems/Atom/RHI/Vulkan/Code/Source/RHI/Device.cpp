@@ -639,8 +639,6 @@ namespace AZ
             // Any containers that maintain references to DeviceObjects need to be cleared here to ensure the device
             // refcount reaches 0 before shutdown.
 
-            m_commandQueueContext.Shutdown();
-
             m_bindlessDescriptorPool.Shutdown();
             m_stagingBufferPool.reset();
             m_constantBufferPool.reset();
@@ -650,13 +648,16 @@ namespace AZ
             m_samplerCache.first.Clear();
             m_pipelineLayoutCache.first.Clear();
             m_semaphoreAllocator.Shutdown();
-            m_asyncUploadQueue.reset();
-            m_commandListAllocator.Shutdown();
 
             m_nullDescriptorManager.reset();
 
             // Make sure this is last to flush any objects released in the above calls.
             m_releaseQueue.Shutdown();
+
+            // The Objects still need the command / upload queues for shutting down, mostly to make sure nothing is pending
+            m_asyncUploadQueue.reset();
+            m_commandListAllocator.Shutdown();
+            m_commandQueueContext.Shutdown();
         }
 
         void Device::ShutdownInternal()
