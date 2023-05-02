@@ -28,6 +28,11 @@ namespace Camera
     CameraComponent::CameraComponent(const CameraComponentConfig& properties)
         : CameraComponentBase(properties)
     {
+        AZ_Printf(
+            "CameraComponent",
+            "Construct CameraComponent with EditorEntity %s (%llu)",
+            properties.GetEditorEntityId().ToString().c_str(),
+            properties.m_editorEntityId);
     }
 
     void CameraComponent::Activate()

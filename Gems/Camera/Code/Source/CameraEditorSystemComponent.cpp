@@ -158,6 +158,12 @@ namespace Camera
 
     void CameraEditorSystemComponent::SetViewForEntity(const AZ::EntityId& id, AZ::RPI::ViewPtr view)
     {
+        AZ_Printf(
+            "CameraEditorSystemComponent",
+            "Set View %s (0x%p) for entity id %s",
+            view->GetName().GetCStr(),
+            view.get(),
+            id.ToString().c_str());
         m_entityViewMap[id] = view;
     }
 

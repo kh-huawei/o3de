@@ -82,10 +82,20 @@ namespace AZStd
 
             void release() // nothrow
             {
-                if (use_count_.fetch_sub(1, AZStd::memory_order_acq_rel) == 1)
+                // if (use_count_.fetch_sub(1, AZStd::memory_order_acq_rel) == 1)
+                // {
+                //     dispose();
+                //     weak_release();
+                // }
+                auto use_count = use_count_.fetch_sub(1, AZStd::memory_order_acq_rel);
+                if (use_count == 1)
                 {
                     dispose();
                     weak_release();
+                }
+                else if (use_count <= 0)
+                {
+                    abort();
                 }
             }
 
