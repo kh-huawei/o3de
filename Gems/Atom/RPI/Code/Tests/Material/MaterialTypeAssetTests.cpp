@@ -46,8 +46,7 @@ namespace UnitTest
                 serializeContext->Class<Splat3Functor, AZ::RPI::MaterialFunctor>()
                     ->Version(1)
                     ->Field("m_floatIndex", &Splat3Functor::m_floatIndex)
-                    ->Field("m_vector3Index", &Splat3Functor::m_vector3Index)
-                    ;
+                    ->Field("m_vector3Name", &Splat3Functor::m_vector3Name);
             }
 
             using AZ::RPI::MaterialFunctor::Process;
@@ -55,12 +54,12 @@ namespace UnitTest
             {
                 // This code isn't actually called in the unit test, but we include it here just to demonstrate what a real functor might look like.
                 float f = context.GetMaterialPropertyValue(m_floatIndex).GetValue<float>();
-                float f3[3] = { f,f,f };
-                context.GetShaderResourceGroup()->SetConstantRaw(m_vector3Index, f3, sizeof(float) * 3);
+                Vector3 f3{ f, f, f };
+                context.GetMaterialShaderParameter()->SetParameter(m_vector3Name, f3);
             }
 
             AZ::RPI::MaterialPropertyIndex m_floatIndex;
-            RHI::ShaderInputConstantIndex m_vector3Index;
+            AZ::Name m_vector3Name;
         };
 
         /// Sample used for testing a MaterialFunctor that updates the shader collection
