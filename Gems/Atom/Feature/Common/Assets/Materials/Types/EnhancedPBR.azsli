@@ -19,7 +19,7 @@
 
 #include MATERIAL_PARAMETERS_AZSLI_FILE_PATH
 
-#if !USE_BINDLESS_SRG
+#ifndef USE_BINDLESS_SRG
 #include <Atom/Feature/Common/Assets/Shaders/Materials/ForwardPassMaterialSrg.azsli>
 #else
 #include <Atom/Features/Materials/SceneMaterialSrg.azsli>
