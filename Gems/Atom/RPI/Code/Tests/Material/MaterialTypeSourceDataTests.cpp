@@ -429,6 +429,37 @@ namespace UnitTest
                 EXPECT_EQ(propertyDescriptor->GetOutputConnections()[i].m_type, expectedValues.m_outputConnections[i].m_type);
             }
         }
+
+        void ValidateShaderParameterIndex(
+            Data::Asset<MaterialTypeAsset>& materialTypeAsset,
+            const MaterialPropertyDescriptor* propertyDescriptor,
+            const int expectedParameterIndex,
+            const int expectedSrgIndex,
+            const int connectionIndex = 0)
+        {
+            EXPECT_TRUE(propertyDescriptor->GetOutputConnections()[connectionIndex].m_containerIndex.IsNull());
+            // shader parameter index
+            EXPECT_EQ(propertyDescriptor->GetOutputConnections()[connectionIndex].m_itemIndex.GetIndex(), expectedParameterIndex);
+
+            // srg input index
+            auto paramDesc = materialTypeAsset->GetMaterialShaderParameterLayout().GetDescriptor(
+                MaterialShaderParameterLayout::Index(propertyDescriptor->GetOutputConnections()[connectionIndex].m_itemIndex.GetIndex()));
+            if (AZStd::holds_alternative<RHI::ShaderInputConstantIndex>(paramDesc->m_srgInputIndex))
+            {
+                auto& constantIndex = AZStd::get<RHI::ShaderInputConstantIndex>(paramDesc->m_srgInputIndex);
+                EXPECT_EQ(constantIndex.GetIndex(), expectedSrgIndex);
+            }
+            else if (AZStd::holds_alternative<RHI::ShaderInputImageIndex>(paramDesc->m_srgInputIndex))
+            {
+                auto& imageIndex = AZStd::get<RHI::ShaderInputImageIndex>(paramDesc->m_srgInputIndex);
+                EXPECT_EQ(imageIndex.GetIndex(), expectedSrgIndex);
+            }
+            else
+            {
+                // neither image nor constant
+                EXPECT_TRUE(false);
+            }
+        }
     };
 
     TEST_F(MaterialTypeSourceDataTests, PopulateAndSearchPropertyLayout)
@@ -928,8 +959,6 @@ namespace UnitTest
         const MaterialPropertyDescriptor* propertyDescriptor = materialTypeAsset->GetMaterialPropertiesLayout()->GetPropertyDescriptor(propertyIndex);
 
         ValidateCommonDescriptorFields(*property, propertyDescriptor);
-        EXPECT_TRUE(propertyDescriptor->GetOutputConnections()[0].m_containerIndex.IsNull());
-        EXPECT_EQ(propertyDescriptor->GetOutputConnections()[0].m_itemIndex.GetIndex(), 7);
     }
 
     TEST_F(MaterialTypeSourceDataTests, CreateMaterialTypeAsset_FloatPropertyConnectedToShaderConstant)
@@ -959,8 +988,7 @@ namespace UnitTest
         const MaterialPropertyDescriptor* propertyDescriptor = materialTypeAsset->GetMaterialPropertiesLayout()->GetPropertyDescriptor(propertyIndex);
 
         ValidateCommonDescriptorFields(*property, propertyDescriptor);
-        EXPECT_TRUE(propertyDescriptor->GetOutputConnections()[0].m_containerIndex.IsNull());
-        EXPECT_EQ(propertyDescriptor->GetOutputConnections()[0].m_itemIndex.GetIndex(), 1);
+        ValidateShaderParameterIndex(materialTypeAsset, propertyDescriptor, 2, 1);
     }
 
     TEST_F(MaterialTypeSourceDataTests, CreateMaterialTypeAsset_ImagePropertyConnectedToShaderInput)
@@ -985,8 +1013,8 @@ namespace UnitTest
         const MaterialPropertyDescriptor* propertyDescriptor = materialTypeAsset->GetMaterialPropertiesLayout()->GetPropertyDescriptor(propertyIndex);
 
         ValidateCommonDescriptorFields(*property, propertyDescriptor);
-        EXPECT_TRUE(propertyDescriptor->GetOutputConnections()[0].m_containerIndex.IsNull());
-        EXPECT_EQ(propertyDescriptor->GetOutputConnections()[0].m_itemIndex.GetIndex(), 0);
+
+        ValidateShaderParameterIndex(materialTypeAsset, propertyDescriptor, 2, 0);
     }
 
     TEST_F(MaterialTypeSourceDataTests, CreateMaterialTypeAsset_IntPropertyConnectedToShaderOption)
@@ -1299,12 +1327,10 @@ namespace UnitTest
         EXPECT_EQ(propertyDescriptor->GetOutputConnections().size(), 4);
 
         // m_int
-        EXPECT_EQ(propertyDescriptor->GetOutputConnections()[0].m_containerIndex.GetIndex(), -1);
-        EXPECT_EQ(propertyDescriptor->GetOutputConnections()[0].m_itemIndex.GetIndex(), 2);
+        ValidateShaderParameterIndex(materialTypeAsset, propertyDescriptor, 2, 2, 0);
 
         // m_uint
-        EXPECT_EQ(propertyDescriptor->GetOutputConnections()[1].m_containerIndex.GetIndex(), -1);
-        EXPECT_EQ(propertyDescriptor->GetOutputConnections()[1].m_itemIndex.GetIndex(), 3); 
+        ValidateShaderParameterIndex(materialTypeAsset, propertyDescriptor, 3, 3, 1);
 
         // shaderB's Efficiency option
         EXPECT_EQ(propertyDescriptor->GetOutputConnections()[2].m_containerIndex.GetIndex(), 1);
@@ -2491,15 +2517,23 @@ namespace UnitTest
         // groupA.groupB.number has a connection to m_groupA_m_groupB_m_number
         MaterialPropertyIndex numberPropertyIndex{0};
         EXPECT_EQ(1, propertiesLayout->GetPropertyDescriptor(numberPropertyIndex)->GetOutputConnections().size());
-        EXPECT_EQ(materialSrgLayout->FindShaderInputConstantIndex(Name("m_groupA_m_groupB_m_number")).GetIndex(),
-            propertiesLayout->GetPropertyDescriptor(numberPropertyIndex)->GetOutputConnections()[0].m_itemIndex.GetIndex());
+        {
+            auto paramIndex = materialTypeAsset->GetMaterialShaderParameterLayout().GetParameterIndex("m_groupA_m_groupB_m_number");
+            auto* desc = materialTypeAsset->GetMaterialShaderParameterLayout().GetDescriptor(paramIndex);
+            auto srgIndex = AZStd::get<RHI::ShaderInputConstantIndex>(desc->m_srgInputIndex);
+            EXPECT_EQ(materialSrgLayout->FindShaderInputConstantIndex(Name("m_groupA_m_groupB_m_number")).GetIndex(), srgIndex.GetIndex());
+        }
 
         // groupA.gropuB.groupC.textureMap has a connection to m_groupA_m_groupB_m_texture
         MaterialPropertyIndex texturePropertyIndex{1};
         EXPECT_EQ(1, propertiesLayout->GetPropertyDescriptor(texturePropertyIndex)->GetOutputConnections().size());
-        EXPECT_EQ(materialSrgLayout->FindShaderInputImageIndex(Name("m_groupA_m_groupB_m_texture")).GetIndex(),
-            propertiesLayout->GetPropertyDescriptor(texturePropertyIndex)->GetOutputConnections()[0].m_itemIndex.GetIndex());
-        
+        {
+            auto paramIndex = materialTypeAsset->GetMaterialShaderParameterLayout().GetParameterIndex("m_groupA_m_groupB_m_texture");
+            auto* desc = materialTypeAsset->GetMaterialShaderParameterLayout().GetDescriptor(paramIndex);
+            auto srgIndex = AZStd::get<RHI::ShaderInputImageIndex>(desc->m_srgInputIndex);
+            EXPECT_EQ(materialSrgLayout->FindShaderInputImageIndex(Name("m_groupA_m_groupB_m_texture")).GetIndex(), srgIndex.GetIndex());
+        }
+
         // groupA.gropuB.groupC.useTextureMap has a connection to o_groupA_o_groupB_o_useTexture and o_groupA_o_groupB_o_useTextureAlt
         MaterialPropertyIndex useTexturePropertyIndex{2};
         EXPECT_EQ(2, propertiesLayout->GetPropertyDescriptor(useTexturePropertyIndex)->GetOutputConnections().size());

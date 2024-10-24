@@ -298,6 +298,9 @@ namespace UnitTest
         // Suppress 1 error as we know an unregistered dependent property will be accessed.
         errorMessageFinder.Reset();
         errorMessageFinder.AddExpectedErrorMessage("Material functor accessing an unregistered material property", 2);
+        errorMessageFinder.AddIgnoredErrorMessage(
+            "Unable to find product asset 'shaders/scenematerialsrg.azshader'. Has the source asset finished building?");
+        errorMessageFinder.AddIgnoredErrorMessage("Unable to locate the Material SRG shader asset, try again");
         Data::Instance<Material> material = Material::FindOrCreate(m_testMaterialAsset);
         errorMessageFinder.CheckExpectedErrorsFound();
 
