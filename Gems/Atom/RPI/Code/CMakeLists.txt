@@ -74,6 +74,8 @@ ly_add_target(
         Gem::Atom_RHI.Private
 )
 
+target_compile_options(${gem_name}.Private PRIVATE -O0)
+
 # Inject the gem name into the Module source file
 ly_add_source_properties(
     SOURCES

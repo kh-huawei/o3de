@@ -33,6 +33,7 @@ PixelGeometryData EvaluatePixelGeometry_MaterialGraphName(inout VsOutput IN, VsS
 
     PixelGeometryData geoData = EvaluatePixelGeometry_BasePBR(
         params,
+        SV,
         IN.worldPosition,
         normalWS,
         tangentWS,

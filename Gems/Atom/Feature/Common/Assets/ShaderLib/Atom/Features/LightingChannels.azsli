@@ -6,9 +6,22 @@
  *
  */
 #pragma once
+
+#ifndef PIPELINE_HAS_OBJECT_SRG
+// assume we have an object-srg by default
+#define PIPELINE_HAS_OBJECT_SRG 1
+#endif 
+
+#if PIPELINE_HAS_OBJECT_SRG
 uint GetLightingChannelMask(VsSystemValues SV)
 {
     return ObjectSrg::m_lightingChannelMask;
 }
+#else
+uint GetLightingChannelMask(VsSystemValues SV)
+{
+    return SV.m_lightingChannels;
+}
+#endif // PIPELINE_HAS_PASS_SRG
 
 

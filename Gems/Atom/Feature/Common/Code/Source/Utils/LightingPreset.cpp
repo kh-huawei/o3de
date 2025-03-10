@@ -147,9 +147,9 @@ namespace AZ
         {
             if (iblFeatureProcessor)
             {
-                iblFeatureProcessor->SetDiffuseImage(m_iblDiffuseImageAsset);
-                iblFeatureProcessor->SetSpecularImage(m_iblSpecularImageAsset);
-                iblFeatureProcessor->SetExposure(m_iblExposure);
+                // iblFeatureProcessor->SetDiffuseImage(m_iblDiffuseImageAsset);
+                // iblFeatureProcessor->SetSpecularImage(m_iblSpecularImageAsset);
+                // iblFeatureProcessor->SetExposure(m_iblExposure);
             }
 
             if (skyboxFeatureProcessor)

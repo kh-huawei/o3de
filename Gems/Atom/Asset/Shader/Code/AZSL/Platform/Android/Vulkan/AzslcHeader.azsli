@@ -32,6 +32,10 @@ static const float4 s_AzslDebugColor = float4(165.0 / 255.0, 30.0 / 255.0, 36.0 
 #define USE_HALF_FLOATS_FOR_ANDROID 1
 #if USE_HALF_FLOATS_FOR_ANDROID
 
+// the DirectXShaderCompiler as of version 1.7.0.4010 does not properly support SV_Barycentrics on all devices
+// see e.g. https://github.com/microsoft/DirectXShaderCompiler/pull/5649
+#define SV_BARYCENTRICS_NOT_SUPPORTED
+
 // use half float for android
 #define real half
 #define real2 half2

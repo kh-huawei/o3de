@@ -22,6 +22,7 @@
 // way to handle this.
 PixelGeometryData EvaluatePixelGeometry_Eye(
     const MaterialParameters params,
+    VsSystemValues SV,
     float3 positionWS,
     real3 normalWS,
     real3 tangentWS,
@@ -48,7 +49,7 @@ PixelGeometryData EvaluatePixelGeometry_Eye(
     {
         for (int i = 0; i != UvSetCount; ++i)
         {
-            EvaluateTangentFrame(geoData.vertexNormal, positionWS, isFrontFace, uvs[i], i,
+            EvaluateTangentFrame(SV, geoData.vertexNormal, positionWS, isFrontFace, uvs[i], i,
                 tangentWS, bitangentWS, geoData.tangents[i], geoData.bitangents[i]);
         }
     }
@@ -58,6 +59,7 @@ PixelGeometryData EvaluatePixelGeometry_Eye(
 
 PixelGeometryData EvaluatePixelGeometry_Eye(
     const MaterialParameters params,
+    VsSystemValues SV,
     float3 positionWS,
     real3 normalWS,
     real3 tangentWS,
@@ -68,7 +70,7 @@ PixelGeometryData EvaluatePixelGeometry_Eye(
 {
     // Base PBR Geo Data
     bool evaluateTangentFrame = o_iris_o_normal_useTexture || o_sclera_o_normal_useTexture;
-    PixelGeometryData geoData = EvaluatePixelGeometry_Eye(params, positionWS, normalWS, tangentWS, bitangentWS, uv, isFrontFace, evaluateTangentFrame);
+    PixelGeometryData geoData = EvaluatePixelGeometry_Eye(params, SV, positionWS, normalWS, tangentWS, bitangentWS, uv, isFrontFace, evaluateTangentFrame);
 
     // Skin specifics
     geoData.localPosition = localPosition;
@@ -89,6 +91,7 @@ PixelGeometryData EvaluatePixelGeometry_Eye(VsOutput IN,  VsSystemValues SV, boo
 
     PixelGeometryData geoData = EvaluatePixelGeometry_Eye(
         params,
+        SV,
         IN.worldPosition,
         normalWS,
         tangentWS,

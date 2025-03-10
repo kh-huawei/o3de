@@ -7,6 +7,12 @@
  */
 #pragma once
 
+#ifndef PIPELINE_HAS_OBJECT_SRG
+// assume we have an object-srg by default
+#define PIPELINE_HAS_OBJECT_SRG 1
+#endif 
+
+#if PIPELINE_HAS_OBJECT_SRG
 uint GetWrinkleMaskCount(VsSystemValues SV)
 {
     return ObjectSrg::m_wrinkle_mask_count;
@@ -30,4 +36,19 @@ real GetWrinkleMaskWeight(VsSystemValues SV, uint wrinkleMaskIndex)
 {
     return ObjectSrg::GetWrinkleMaskWeight(wrinkleMaskIndex);
 }
+#else // PIPELINE_HAS_OBJECT_SRG
+// TODO: we currently don't support Wrinkle masks in pipelines without an object-srg
+uint GetWrinkleMaskCount(VsSystemValues SV)
+{
+    return 0;
+}
+real4 SampleWrinkleMask(VsSystemValues SV, sampler textureSampler, uint wrinkleMaskIndex, float2 wrinkleMaskUv, float4 uvDxDy, bool customDerivatives)
+{
+    return real4(0, 0, 0, 0);
+}
+real GetWrinkleMaskWeight(VsSystemValues SV, uint wrinkleMaskIndex)
+{
+    return 0.0;
+}
+#endif // PIPELINE_HAS_OBJECT_SRG
 

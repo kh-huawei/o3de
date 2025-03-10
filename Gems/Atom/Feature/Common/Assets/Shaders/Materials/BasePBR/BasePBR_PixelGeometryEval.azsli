@@ -19,6 +19,7 @@
 
 PixelGeometryData EvaluatePixelGeometry_BasePBR(
     const MaterialParameters params,
+    VsSystemValues SV,
     float3 positionWS,
     real3 normalWS,
     real3 tangentWS,
@@ -38,7 +39,7 @@ PixelGeometryData EvaluatePixelGeometry_BasePBR(
     {
         for (int i = 0; i != UvSetCount; ++i)
         {
-            EvaluateTangentFrame(geoData.vertexNormal, positionWS, isFrontFace, uvs[i], i,
+            EvaluateTangentFrame(SV, geoData.vertexNormal, positionWS, isFrontFace, uvs[i], i,
                 tangentWS, bitangentWS, geoData.tangents[i], geoData.bitangents[i]);
         }
     }
@@ -56,6 +57,7 @@ PixelGeometryData EvaluatePixelGeometry_BasePBR(VsOutput IN, VsSystemValues SV, 
 
     return EvaluatePixelGeometry_BasePBR(
         params,
+        SV,
         IN.worldPosition,
         normalWS,
         tangentWS,

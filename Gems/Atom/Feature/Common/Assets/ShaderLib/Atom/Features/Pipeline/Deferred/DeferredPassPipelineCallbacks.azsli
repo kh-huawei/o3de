@@ -1,0 +1,63 @@
+/*
+ * Copyright (c) Contributors to the Open 3D Engine Project.
+ * For complete copyright and license terms please see the LICENSE at the root of this distribution.
+ *
+ * SPDX-License-Identifier: Apache-2.0 OR MIT
+ *
+ */
+
+#pragma once
+
+#ifndef VsSystemValues
+#error "VsSystemValues needs to be declared"
+#endif
+
+// DrawSrg, ObjectSrg, ViewSrg and SceneSrg need to be defined fully before this file 
+
+#ifndef PIPELINE_HAS_PASS_SRG
+// assume we have a pass-srg by default
+#define PIPELINE_HAS_PASS_SRG 1
+#endif 
+
+#ifndef PIPELINE_HAS_OBJECT_SRG
+// assume we dont have an object-srg by default
+#define PIPELINE_HAS_OBJECT_SRG 0
+#endif 
+
+#ifndef PIPELINE_HAS_DRAW_SRG
+// assume we dont have a draw-srg by default
+#define PIPELINE_HAS_DRAW_SRG 0
+#endif
+
+#include <Atom/Features/GoboTexture.azsli>
+#include <Atom/Features/SampleBrdfMap.azsli>
+#include <Atom/Features/LightingChannels.azsli>
+
+float4x4 GetObjectToWorldMatrix(VsSystemValues SV)
+{
+    return SceneSrg::GetObjectToWorldMatrix(SV.m_transformMatrixIndex);
+}
+
+float3x3 GetObjectToWorldMatrixInverseTranspose(VsSystemValues SV)
+{
+    return SceneSrg::GetObjectToWorldInverseTransposeMatrix(SV.m_transformMatrixIndex);
+}
+
+float4x4 GetViewProjectionMatrix(VsSystemValues SV)
+{
+    return ViewSrg::m_viewProjectionMatrix;
+}
+
+#if MATERIALPIPELINE_USES_PREV_VERTEX_POSITION
+float4x4 GetObjectToWorldMatrixPrev(VsSystemValues SV)
+{
+    return SceneSrg::GetObjectToWorldMatrixPrev(SV.m_transformMatrixIndex);
+}
+
+float4x4 GetViewProjectionPrevMatrix(VsSystemValues SV)
+{
+    return ViewSrg::m_viewProjectionPrevMatrix;
+}
+#endif // MATERIALPIPELINE_USES_PREV_VERTEX_POSITION
+
+

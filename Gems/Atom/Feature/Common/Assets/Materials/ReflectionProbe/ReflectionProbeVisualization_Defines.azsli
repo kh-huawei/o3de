@@ -5,9 +5,21 @@
  * SPDX-License-Identifier: Apache-2.0 OR MIT
  *
  */
+#ifndef PIPELINE_HAS_OBJECT_SRG
+#define PIPELINE_HAS_OBJECT_SRG 1
+#endif
+#ifndef PIPELINE_HAS_DRAW_SRG
+#define PIPELINE_HAS_DRAW_SRG 1
+#endif
 
+
+#if PIPELINE_HAS_OBJECT_SRG
 #include <Atom/Features/PBR/DefaultObjectSrg.azsli>
+#endif
+
+#if PIPELINE_HAS_DRAW_SRG
 #include <Atom/RPI/ShaderResourceGroups/DefaultDrawSrg.azsli>
+#endif
 
 struct MaterialParameters {};
 #include <Atom/Features/Materials/MaterialSrg.azsli>
