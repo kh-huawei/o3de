@@ -9,6 +9,7 @@
 #include <Atom/Features/SrgSemantics.azsli>
 
 #define MATERIALPIPELINE_SHADER_HAS_GEOMETRIC_PIXEL_STAGE 1
+#define PIPELINE_HAS_PASS_SRG 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -33,6 +34,7 @@ VsOutput VertexShader(VsInput IN, uint instanceId : SV_InstanceID)
     VsSystemValues SV;
     SV.m_instanceId = instanceId;
     VsOutput OUT = EvaluateVertexGeometry(IN, SV, GetMaterialParameters());
+    OUT.m_instanceId = instanceId;
     return OUT;
 }
 
@@ -46,11 +48,10 @@ PsOutput PixelShader(VsOutput IN, bool isFrontFace : SV_IsFrontFace)
     // ------- Reconstruct the Instance-Id --------
     VsSystemValues SV;
     SV.m_instanceId = IN.m_instanceId;
-
     PixelGeometryData geoData = EvaluatePixelGeometry(IN, SV, isFrontFace, GetMaterialParameters());
 
     // Pixel clipping can be done here
-    EvaluateSurface(IN, geoData, GetMaterialParameters());
+    EvaluateSurface(IN, SV, geoData, GetMaterialParameters());
 
     PsOutput OUT;
     OUT.m_depth = IN.position.z;

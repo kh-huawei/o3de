@@ -41,19 +41,16 @@
     }
     
     // Callback function for ParallaxMapping.azsli
-    DepthResult GetDepth(Texture2D heightmap, sampler mapSampler, float2 uv, float2 uv_ddx, float2 uv_ddy)
+    DepthResult GetDepth(const MaterialParameters params, Texture2D heightmap, sampler mapSampler, float2 uv, float2 uv_ddx, float2 uv_ddy)
     {
         return SampleDepthFromHeightmap(heightmap, mapSampler, uv, uv_ddx, uv_ddy);
     }
 
 
     #include <Atom/Feature/Common/Assets/Shaders/Materials/BasePBR/BasePBR_VertexEval.azsli>
-
-
     #include <Atom/Feature/Common/Assets/Shaders/Materials/StandardPBR/StandardPBR_PixelGeometryEval.azsli>
-
-
     #include <Atom/Feature/Common/Assets/Shaders/Materials/StandardPBR/StandardPBR_SurfaceEval.azsli>
+    #include <Atom/Feature/Common/Assets/Shaders/Materials/StandardPBR/StandardPBR_LightingEval.azsli>
 
 #elif MATERIALPIPELINE_SHADER_HAS_GEOMETRIC_PIXEL_STAGE
 
@@ -75,7 +72,7 @@
     }
     
     // Callback function for ParallaxMapping.azsli
-    DepthResult GetDepth(Texture2D heightmap, sampler mapSampler, float2 uv, float2 uv_ddx, float2 uv_ddy)
+    DepthResult GetDepth(const MaterialParameters params, Texture2D heightmap, sampler mapSampler, float2 uv, float2 uv_ddx, float2 uv_ddy)
     {
         return SampleDepthFromHeightmap(heightmap, mapSampler, uv, uv_ddx, uv_ddy);
     }
@@ -86,7 +83,7 @@
 
     #include "Atom/Feature/Common/Assets/Shaders/Materials/MaterialFunctions/StandardGetAlphaAndClip.azsli"
 
-    void EvaluateSurface(VsOutput IN, PixelGeometryData geoData, const MaterialParameters params)
+    void EvaluateSurface(VsOutput IN, VsSystemValues SV, PixelGeometryData geoData, const MaterialParameters params)
     {
         GetAlphaAndClip(params, geoData.uvs);
     }

@@ -70,7 +70,8 @@ VsOutput EvaluateVertexGeometry_EnhancedPBR(
     float2 uv1,
     uint instanceId)
 {
-    VsSystemValues  SV;
+
+    VsSystemValues SV;
     SV.m_instanceId = instanceId;
 
     return EvaluateVertexGeometry_EnhancedPBR(

@@ -14,10 +14,14 @@
 
 // DrawSrg, ObjectSrg, ViewSrg and SceneSrg need to be defined fully before this file 
 
-uint GetLightingChannelMask(VsSystemValues SV)
-{
-    return ObjectSrg::m_lightingChannelMask;
-}
+#ifndef PIPELINE_HAS_PASS_SRG
+// assume we have a pass-srg by default
+#define PIPELINE_HAS_PASS_SRG 1
+#endif 
+
+#include <Atom/Features/GoboTexture.azsli>
+#include <Atom/Features/SampleBrdfMap.azsli>
+#include <Atom/Features/LightingChannels.azsli>
 
 option bool o_meshInstancingIsEnabled = false;
 rootconstant uint m_rootConstantInstanceDataOffset;
@@ -51,16 +55,6 @@ float4x4 GetViewProjectionMatrix(VsSystemValues SV)
     return ViewSrg::m_viewProjectionMatrix;
 }
 
-bool HasGoboTexture(int index)
-{
-    return index < ViewSrg::MaxGoboTextureCount;
-}
-
-Texture2D<float> GetGoboTexture(int index)
-{
-    return ViewSrg::m_goboTextures[index];
-}
-
 #if MATERIALPIPELINE_USES_PREV_VERTEX_POSITION
 float4x4 GetObjectToWorldMatrixPrev(VsSystemValues SV)
 {
@@ -79,7 +73,5 @@ float4x4 GetViewProjectionPrevMatrix(VsSystemValues SV)
     return ViewSrg::m_viewProjectionPrevMatrix;
 }
 #endif // MATERIALPIPELINE_USES_PREV_VERTEX_POSITION
-
-
 
 

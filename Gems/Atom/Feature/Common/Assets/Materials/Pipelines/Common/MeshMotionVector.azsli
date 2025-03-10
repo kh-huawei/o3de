@@ -11,6 +11,7 @@
 
 #define MATERIALPIPELINE_SHADER_HAS_PIXEL_STAGE 0 // Well, it does have a pixel stage, but not one that can be customized.
 #define MATERIALPIPELINE_USES_PREV_VERTEX_POSITION 1
+#define PIPELINE_HAS_PASS_SRG 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -41,6 +42,7 @@ VsOutput VertexShader(VsInput IN, uint instanceId : SV_InstanceID)
     VsSystemValues SV;
     SV.m_instanceId = instanceId;
     VsOutput OUT = EvaluateVertexGeometry(IN, SV, GetMaterialParameters());
+    OUT.m_instanceId = instanceId;
     return OUT;
 }
 

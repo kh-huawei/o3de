@@ -30,12 +30,10 @@
     
 
     #include <Atom/Feature/Common/Assets/Shaders/Materials/Skin/Skin_VertexEval.azsli>
-
-
     #include <Atom/Feature/Common/Assets/Shaders/Materials/Skin/Skin_PixelGeometryEval.azsli>
-    
-
     #include <Atom/Feature/Common/Assets/Shaders/Materials/Skin/Skin_SurfaceEval.azsli>
+    #include <Atom/Feature/Common/Assets/Shaders/Materials/Skin/Skin_LightingBrdf.azsli>
+    #include <Atom/Feature/Common/Assets/Shaders/Materials/Skin/Skin_LightingEval.azsli>
 
 #else
 

@@ -17,7 +17,7 @@
         VsOutput output;
 
         float4x4 objectToWorld = GetObjectToWorldMatrix(SV);
-        output.worldPosition = mul(objectToWorld, float4(IN.position, 1.0));
+        output.worldPosition = mul(objectToWorld, float4(IN.position, 1.0)).xyz;
         
         float4x4 viewProjectionMatrix = GetViewProjectionMatrix(SV);
         output.position = mul(viewProjectionMatrix, output.worldPosition);
@@ -35,12 +35,14 @@
         return geoData;
     }
 
-    Surface EvaluateSurface(VsOutput IN, PixelGeometryData geoData, const MaterialParameters params)
+    Surface EvaluateSurface(VsOutput IN, VsSystemValues SV, PixelGeometryData geoData, const MaterialParameters params)
     {
         Surface surface;
+        surface.lightingChannels = GetLightingChannelMask(SV);
         surface.position = geoData.positionWS;
         surface.vertexNormal = geoData.vertexNormal;
         surface.normal = geoData.vertexNormal;
+
 
         float3 baseColor = float3(1,1,1);
         float specularF0Factor = 0.5;
@@ -52,6 +54,10 @@
 
         return surface;
     }
+
+    // use the lighting model (lightingData, BRDF - function and ApplyLights) from the BasePBR
+
+    #include <Atom/Feature/Common/Assets/Shaders/Materials/BasePBR/BasePBR_LightingEval.azsli>
 
 #else
 

@@ -72,10 +72,10 @@ float M_R(Surface surface, float Lh, float sinLiPlusSinLr)
     return GaussianNormalized(Lh, a, b);
 }
 
-float M_TT(Surface surface, float Lh, float sinLiPlusSinLr)
+float3 M_TT(Surface surface, float Lh, float sinLiPlusSinLr)
 {
-    float a = 1.0f * surface.cuticleTilt;
-    float b = 0.5f * surface.roughnessA2;
+    float3 a = 1.0f * surface.cuticleTilt;
+    float3 b = 0.5f * surface.roughnessA2;
 
 //    return GaussianNormalized(sinLiPlusSinLr, a, b);  // reference
     return GaussianNormalized(Lh, a, b);

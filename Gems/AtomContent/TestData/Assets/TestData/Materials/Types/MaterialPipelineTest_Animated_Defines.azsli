@@ -12,7 +12,7 @@
 #include <Atom/Features/PBR/DefaultObjectSrg.azsli>
 #include <Atom/RPI/ShaderResourceGroups/DefaultDrawSrg.azsli>
 
-ShaderResourceGroup MaterialSrg : SRG_PerMaterial
+struct MaterialParameters
 {
     float3 m_baseColor;
     float m_metallic;
@@ -20,7 +20,9 @@ ShaderResourceGroup MaterialSrg : SRG_PerMaterial
     float m_animationSpeed;
     float m_amplitude;
     float m_frequency;
-}
+};
+
+#include <Atom/Features/Materials/MaterialSrg.azsli>
 
 #if MATERIALPIPELINE_SHADER_HAS_PIXEL_STAGE
 
@@ -50,14 +52,15 @@ ShaderResourceGroup MaterialSrg : SRG_PerMaterial
     };
 
     #include <Atom/Feature/Common/Assets/Shaders/Materials/BasePBR/BasePBR_SurfaceData.azsli>
+    #include <Atom/Feature/Common/Assets/Shaders/Materials/BasePBR/BasePBR_LightingData.azsli>
 
 #else
 
     // by default the Vertex-Data is empty, so enable the parts we need
     #define PIPELINE_VERTEX_POSITION 1
+    #define PIPELINE_VERTEX_POSITIONWS 1
     // #define PIPELINE_VERTEX_LOCALPOSITION 1
 #if MATERIALPIPELINE_USES_PREV_VERTEX_POSITION
-    #define PIPELINE_VERTEX_POSITIONWS 1
     #define PIPELINE_VERTEX_PREV_POSITION 1
 #endif
     // #define PIPELINE_VERTEX_NORMAL 1
