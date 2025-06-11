@@ -1,7 +1,7 @@
 ### Glossary
 
 - **Rendering Pipeline**: Sequence of Rendering-Passes, declared in e.g. `MainRenderPipeline.azasset` and `MainPipeline.pass`, or `LowEndRenderPipeline.azasset` and `LowEndPipeline.pass`
-- **Materialtype**: A list of material properties, material functors and rasterpass - shaders needed to render a mesh with that material, e.g. `AutoBrick.materialtype`, or `basepbr_generated.materialtype`  
+- **Materialtype**: A list of material properties, material functors and rasterpass shaders needed to render a mesh with that material, e.g. `AutoBrick.materialtype`, or `basepbr_generated.materialtype`  
 - **Abstract Materialtype**: A list of material properties and material-functors and several shader functions, but no actual shaders. Also specifies a lighting model needed for the material pipeline. E.g. `BasePBR.materialtype`
 - **Material**: An instance of a MaterialType with specific property values, assigned to a mesh and rendered.
 - **Material Instance**: This term is sometimes used in the Editor, but it is functionally the same as a Material, i.e. a set of property values for a material-type.
@@ -9,9 +9,9 @@
 - **Material Shader Parameters**: Specific set of property values (e.g. a texture, or a color) used by shaders during rendering. 
 - **Material Functors**: Generic Lua scripts or C++ functions that are executed when material properties are modified, e.g. `UseTexture` sets a shader-option and a texture-map - index when a texture is selected.
 - **Material Pipeline**: A list of shader templates that are compatible with a Rendering Pipeline and that use the material-shadercode from the abstract materialtype. A material-pipeline generates a non-abstract materialtype and shaders, so that an abstract material can be rendered with a specific rendering pipeline, e.g (`MainPipeline.materialpipeline` or `LowEndPipeline.materialpipelin`).
-- **Material Pipeline Script**: A lua - script that filters the shader templates of the material pipeline based on the lighting model of the abstract materialtype, e.g. `MainPipelineScript.lua` or `LowEndPipelineScript.lua`
-- **Material Pipeline Functors**: Similar to material functors, but specified in the material pipeline: Generic lua - scripts that are executed when a material property is modified: e.g. `ShaderEnable.lua` enables or disables transparency - shaders based on the `isTransparent` - property of the material. 
-- **Material Canvas**: A Graphical Node-based editor used to create custom shader code for material types. The graph is converted into shader code for abstract material-types, which in turn use materialpipelines to create shaders for specific render pipelines.
+- **Material Pipeline Script**: A lua script that filters the shader templates of the material pipeline based on the lighting model of the abstract materialtype, e.g. `MainPipelineScript.lua` or `LowEndPipelineScript.lua`
+- **Material Pipeline Functors**: Similar to material functors, but specified in the material pipeline: Generic lua scripts that are executed when a material property is modified: e.g. `ShaderEnable.lua` enables or disables transparency - shaders based on the `isTransparent` - property of the material. 
+- **Material Canvas**: A graphical node-based editor used to create custom shader code for material types. The graph is converted into shader code for abstract material-types, which in turn use materialpipelines to create shaders for specific render pipelines.
 
 ### MaterialPipeline basics
 
